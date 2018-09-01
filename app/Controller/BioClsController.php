@@ -3,28 +3,28 @@ App::uses('CrudBaseController', 'Controller');
 App::uses('PagenationForCake', 'Vendor/Wacg');
 
 /**
- * ネコ
+ * 綱
  * 
  * @note
- * ネコ画面ではネコ一覧を検索閲覧、編集など多くのことができます。
+ * 綱画面では綱一覧を検索閲覧、編集など多くのことができます。
  * 
  * @date 2015-9-16 | 2018-4-25 削除のバグを主末井
  * @version 3.0.1
  *
  */
-class NekoController extends CrudBaseController {
+class BioClsController extends CrudBaseController {
 
 	/// 名称コード
-	public $name = 'Neko';
+	public $name = 'BioCls';
 	
 	/// 使用しているモデル
-	public $uses = array('Neko','CrudBase');
+	public $uses = array('BioCls','CrudBase');
 	
 	/// オリジナルヘルパーの登録
 	public $helpers = array('CrudBase');
 
 	/// デフォルトの並び替え対象フィールド
-	public $defSortFeild='Neko.sort_no';
+	public $defSortFeild='BioCls.sort_no';
 	
 	/// デフォルトソートタイプ	  0:昇順 1:降順
 	public $defSortType=0;
@@ -65,25 +65,23 @@ class NekoController extends CrudBaseController {
 	/**
 	 * indexページのアクション
 	 *
-	 * indexページではネコ一覧を検索閲覧できます。
+	 * indexページでは綱一覧を検索閲覧できます。
 	 * 一覧のidから詳細画面に遷移できます。
 	 * ページネーション、列名ソート、列表示切替、CSVダウンロード機能を備えます。
 	 */
 	public function index() {
 		
 		// CrudBase共通処理（前）
-		$crudBaseData = $this->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+		$crudBaseData = $this->indexBefore('BioCls');//indexアクションの共通先処理(CrudBaseController)
 		
 		//一覧データを取得
-		$data = $this->Neko->findData($crudBaseData);
+		$data = $this->BioCls->findData($crudBaseData);
 
 		// CrudBase共通処理（後）
 		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
 		
 		// CBBXS-1020
-		$nekoGroupList = $this->Neko->getNekoGroupList();
-		$neko_group_json = json_encode($nekoGroupList,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-		$this->set(array('nekoGroupList' => $nekoGroupList,'neko_group_json' => $neko_group_json));
+
 		// CBBXE
 		
 // 		// ■■■□□□■■■□□□■■■□□□テスト
@@ -97,7 +95,7 @@ class NekoController extends CrudBaseController {
 		
 		$this->set($crudBaseData);
 		$this->set(array(
-			'title_for_layout'=>'ネコ',
+			'title_for_layout'=>'綱',
 			'data'=> $data,
 		));
 		
@@ -110,18 +108,18 @@ class NekoController extends CrudBaseController {
 	/**
 	 * 詳細画面
 	 * 
-	 * ネコ情報の詳細を表示します。
+	 * 綱情報の詳細を表示します。
 	 * この画面から入力画面に遷移できます。
 	 * 
 	 */
 	public function detail() {
 		
-		$res=$this->edit_before('Neko');
+		$res=$this->edit_before('BioCls');
 		$ent=$res['ent'];
 	
 
 		$this->set(array(
-				'title_for_layout'=>'ネコ・詳細',
+				'title_for_layout'=>'綱・詳細',
 				'ent'=>$ent,
 		));
 		
@@ -186,9 +184,9 @@ class NekoController extends CrudBaseController {
 		$ent = $this->setCommonToEntity($ent);
 	
 		// エンティティをDB保存
-		$this->Neko->begin();
-		$ent = $this->Neko->saveEntity($ent,$regParam);
-		$this->Neko->commit();//コミット
+		$this->BioCls->begin();
+		$ent = $this->BioCls->saveEntity($ent,$regParam);
+		$this->BioCls->commit();//コミット
 		
 		// ファイルアップロード関連の一括作業
 		$option = array();
@@ -240,13 +238,13 @@ class NekoController extends CrudBaseController {
 		$ent['delete_flg'] = $ent0['delete_flg'];
 	
 		// エンティティをDB保存
-		$this->Neko->begin();
+		$this->BioCls->begin();
 		if($eliminate_flg == 0){
-			$ent = $this->Neko->saveEntity($ent,$regParam); // 更新
+			$ent = $this->BioCls->saveEntity($ent,$regParam); // 更新
 		}else{
-		    $this->Neko->delete($ent['id']); // 削除
+		    $this->BioCls->delete($ent['id']); // 削除
 		}
-		$this->Neko->commit();//コミット
+		$this->BioCls->commit();//コミット
 	
 		$ent=Sanitize::clean($ent, array('encode' => true));//サニタイズ（XSS対策）
 		$json_data=json_encode($ent);//JSONに変換
@@ -274,9 +272,9 @@ class NekoController extends CrudBaseController {
 		$data = json_decode($json,true);//JSON文字を配列に戻す
 		
 		// データ保存
-		$this->Neko->begin();
-		$this->Neko->saveAll($data); // まとめて保存。内部でSQLサニタイズされる。
-		$this->Neko->commit();
+		$this->BioCls->begin();
+		$this->BioCls->saveAll($data); // まとめて保存。内部でSQLサニタイズされる。
+		$this->BioCls->commit();
 
 		$res = array('success');
 		
@@ -298,7 +296,7 @@ class NekoController extends CrudBaseController {
 		$this->autoRender = false;//ビュー(ctp)を使わない。
 		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		
-		$this->csv_fu_base($this->Neko,array('id','neko_val','neko_name','neko_date','neko_group','neko_dt','img_fn','note','sort_no'));
+		$this->csv_fu_base($this->BioCls,array('id','bio_cls_val','bio_cls_name','bio_cls_date','bio_cls_group','bio_cls_dt','img_fn','note','sort_no'));
 		
 	}
 	
@@ -341,7 +339,7 @@ class NekoController extends CrudBaseController {
 		//CSVファイル名を作成
 		$date = new DateTime();
 		$strDate=$date->format("Y-m-d");
-		$fn='neko'.$strDate.'.csv';
+		$fn='bio_cls'.$strDate.'.csv';
 	
 	
 		//CSVダウンロード
@@ -362,10 +360,10 @@ class NekoController extends CrudBaseController {
 		 
 		
         //セッションから検索条件情報を取得
-        $kjs=$this->Session->read('neko_kjs');
+        $kjs=$this->Session->read('bio_cls_kjs');
         
         // セッションからページネーション情報を取得
-        $pages = $this->Session->read('neko_pages');
+        $pages = $this->Session->read('bio_cls_pages');
 
         $page_no = 0;
         $row_limit = 100000;
@@ -373,7 +371,7 @@ class NekoController extends CrudBaseController {
         $sort_desc = $pages['sort_desc'];
 
 		//DBからデータ取得
-	   $data=$this->Neko->findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc);
+	   $data=$this->BioCls->findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc);
 		if(empty($data)){
 			return array();
 		}
@@ -411,34 +409,25 @@ class NekoController extends CrudBaseController {
 
 		
 		// CBBXS-3001 
-		$xxx=0;
-		
+
 		// CBBXE
 		
 		
 		/// 検索条件情報の定義
 		$this->kensakuJoken=array(
-		
-			// CBBXS-1000 
 				
 				array('name'=>'kj_main','def'=>null),
-				array('name'=>'kj_id','def'=>null),
-				array('name'=>'kj_neko_val1','def'=>null),
-				array('name'=>'kj_neko_val2','def'=>null),
-				array('name'=>'kj_neko_name','def'=>null),
-			    array('name'=>'kj_neko_date_ym','def'=>null),
-				array('name'=>'kj_neko_date1','def'=>null),
-				array('name'=>'kj_neko_date2','def'=>null),
-				array('name'=>'kj_neko_group','def'=>null),
-				array('name'=>'kj_neko_dt','def'=>null),
-				array('name'=>'kj_img_fn','def'=>null),
-				array('name'=>'kj_note','def'=>null),
-				array('name'=>'kj_sort_no','def'=>null),
-				array('name'=>'kj_delete_flg','def'=>0),
-				array('name'=>'kj_update_user','def'=>null),
-				array('name'=>'kj_ip_addr','def'=>null),
-				array('name'=>'kj_created','def'=>null),
-				array('name'=>'kj_modified','def'=>null),
+				// CBBXS-1000 
+			array('name'=>'kj_id','def'=>null),
+			array('name'=>'kj_bio_cls_name','def'=>null),
+			array('name'=>'kj_note','def'=>null),
+			array('name'=>'kj_sort_no','def'=>null),
+			array('name'=>'kj_delete_flg','def'=>0),
+			array('name'=>'kj_update_user','def'=>null),
+			array('name'=>'kj_ip_addr','def'=>null),
+			array('name'=>'kj_created','def'=>null),
+			array('name'=>'kj_modified','def'=>null),
+
 				// CBBXE
 				
 				array('name'=>'row_limit','def'=>50),
@@ -453,84 +442,48 @@ class NekoController extends CrudBaseController {
 		$this->kjs_validate=array(
 				
 				// CBBXS-1001
-				
 				'kj_id' => array(
 						'naturalNumber'=>array(
 								'rule' => array('naturalNumber', true),
-								'message' => 'IDは数値を入力してください',
+								'message' => 'idは数値を入力してください',
 								'allowEmpty' => true
 						),
 				),
-					
-				'kj_neko_val1' => array(
-						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-								'message' => 'ネコ数値1は整数を入力してください。',
-								'allowEmpty' => true
-						),
-				),
-					
-				'kj_neko_val2' => array(
-						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-								'message' => 'ネコ数値2は整数を入力してください。',
-								'allowEmpty' => true
-						),
-				),
-					
-		
-				'kj_neko_name'=> array(
+				'kj_bio_cls_name'=> array(
 						'maxLength'=>array(
 								'rule' => array('maxLength', 255),
-								'message' => 'ネコ名前は255文字以内で入力してください',
+								'message' => '綱名は255文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
-		
-				'kj_neko_date1'=> array(
-						'rule' => array( 'date', 'ymd'),
-						'message' => 'ネコ日【範囲1】は日付形式【yyyy-mm-dd】で入力してください。',
-						'allowEmpty' => true
-				),
-		
-				'kj_neko_date2'=> array(
-						'rule' => array( 'date', 'ymd'),
-						'message' => 'ネコ日【範囲2】は日付形式【yyyy-mm-dd】で入力してください。',
-						'allowEmpty' => true
-				),
-					
 				'kj_note'=> array(
 						'maxLength'=>array(
 								'rule' => array('maxLength', 255),
-								'message' => '備考は255文字以内で入力してください',
+								'message' => '備考は0文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
-			
 				'kj_sort_no' => array(
-					'custom'=>array(
-						'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-						'message' => '順番は整数を入力してください。',
-						'allowEmpty' => true
-					),
+						'custom'=>array(
+								'rule' => array( 'custom', '/^[-]?[0-9] ?$/' ),
+								'message' => '順番は整数を入力してください。',
+								'allowEmpty' => true
+						),
 				),
-					
 				'kj_update_user'=> array(
 						'maxLength'=>array(
-								'rule' => array('maxLength', 50),
+								'rule' => array('maxLength', 255),
 								'message' => '更新者は50文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
-					
 				'kj_ip_addr'=> array(
 						'maxLength'=>array(
-								'rule' => array('maxLength', 40),
-								'message' => '更新IPアドレスは40文字以内で入力してください',
+								'rule' => array('maxLength', 255),
+								'message' => 'IPアドレスは40文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
-					
 				'kj_created'=> array(
 						'maxLength'=>array(
 								'rule' => array('maxLength', 20),
@@ -538,15 +491,14 @@ class NekoController extends CrudBaseController {
 								'allowEmpty' => true
 						),
 				),
-					
 				'kj_modified'=> array(
 						'maxLength'=>array(
 								'rule' => array('maxLength', 20),
-								'message' => '更新日時は20文字以内で入力してください',
+								'message' => '更新日は20文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
-				
+
 				// CBBXE
 		);
 		
@@ -560,74 +512,50 @@ class NekoController extends CrudBaseController {
 			// CBBXS-1002
 			'id'=>array(
 					'name'=>'ID',//HTMLテーブルの列名
-					'row_order'=>'Neko.id',//SQLでの並び替えコード
+					'row_order'=>'BioCls.id',//SQLでの並び替えコード
 					'clm_show'=>1,//デフォルト列表示 0:非表示 1:表示
 			),
-			'neko_val'=>array(
-					'name'=>'ネコ数値',
-					'row_order'=>'Neko.neko_val',
-					'clm_show'=>0,
-			),
-			'neko_name'=>array(
-					'name'=>'ネコ名前',
-					'row_order'=>'Neko.neko_name',
-					'clm_show'=>1,
-			),
-			'neko_group'=>array(
-				'name'=>'ネコ種別',
-				'row_order'=>'Neko.neko_group',
-				'clm_show'=>1,
-			),
-			'neko_date'=>array(
-					'name'=>'ネコ日',
-					'row_order'=>'Neko.neko_date',
-					'clm_show'=>1,
-			),
-			'neko_dt'=>array(
-					'name'=>'ネコ日時',
-					'row_order'=>'Neko.neko_dt',
-					'clm_show'=>1,
-			),
-			'img_fn'=>array(
-					'name'=>'画像ファイル名',
-					'row_order'=>'Neko.img_fn',
+			'bio_cls_name'=>array(
+					'name'=>'綱名',
+					'row_order'=>'BioCls.bio_cls_name',
 					'clm_show'=>1,
 			),
 			'note'=>array(
 					'name'=>'備考',
-					'row_order'=>'Neko.note',
-					'clm_show'=>0,
+					'row_order'=>'BioCls.note',
+					'clm_show'=>1,
 			),
 			'sort_no'=>array(
-				'name'=>'順番',
-				'row_order'=>'Neko.sort_no',
-				'clm_show'=>0,
+					'name'=>'順番',
+					'row_order'=>'BioCls.sort_no',
+					'clm_show'=>0,
 			),
 			'delete_flg'=>array(
-					'name'=>'削除フラグ',
-					'row_order'=>'Neko.delete_flg',
+					'name'=>'無効フラグ',
+					'row_order'=>'BioCls.delete_flg',
 					'clm_show'=>1,
 			),
 			'update_user'=>array(
 					'name'=>'更新者',
-					'row_order'=>'Neko.update_user',
+					'row_order'=>'BioCls.update_user',
 					'clm_show'=>0,
 			),
 			'ip_addr'=>array(
-					'name'=>'更新IPアドレス',
-					'row_order'=>'Neko.ip_addr',
+					'name'=>'IPアドレス',
+					'row_order'=>'BioCls.ip_addr',
 					'clm_show'=>0,
 			),
 			'created'=>array(
 					'name'=>'生成日時',
-					'row_order'=>'Neko.created',
+					'row_order'=>'BioCls.created',
 					'clm_show'=>0,
 			),
 			'modified'=>array(
-					'name'=>'更新日時',
-					'row_order'=>'Neko.modified',
-					'clm_show'=>1,
+					'name'=>'更新日',
+					'row_order'=>'BioCls.modified',
+					'clm_show'=>0,
 			),
+
 			// CBBXE
 		));
 
