@@ -15,12 +15,6 @@
 ?>
 <!-- CrudBase共通 -->
 
-
-<div class="kj_div" style="margin-top:5px">
-	<input type="button" value="リセット" title="検索入力を初期に戻します" onclick="resetKjs()" class="btn btn-primary btn-xs" />
-</div>
-
-
 <div style="width:1px;height:20px;clear:both"></div>
 
 

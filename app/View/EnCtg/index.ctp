@@ -61,6 +61,9 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 		echo $this->element('CrudBase/crud_base_cmn_inp');
 
 		?>
+			<div class="kj_div" style="margin-top:5px">
+				<input type="button" value="リセット" title="検索入力を初期に戻します" onclick="resetKjs()" class="btn btn-primary btn-xs" />
+			</div>
 		</div>
 		<?php echo $this->Form->end()?>
 	</div>
@@ -94,8 +97,8 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 <?php 
 	echo $this->element('CrudBase/crud_base_index');
 	
-	$csv_dl_url = $this->html->webroot . 'en_ctg/csv_download';
-	$this->CrudBase->makeCsvBtns($csv_dl_url);
+// 	$csv_dl_url = $this->html->webroot . 'en_ctg/csv_download';
+// 	$this->CrudBase->makeCsvBtns($csv_dl_url);
 ?>
 
 </div><!-- detail_div -->
