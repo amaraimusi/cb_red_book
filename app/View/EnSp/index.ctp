@@ -1,13 +1,14 @@
 <?php
-$this->CrudBase->setModelName('UserMng');
+$this->CrudBase->init(array('model_name'=>'EnSp'));
 
 // CSSファイルのインクルード
 $cssList = $this->CrudBase->getCssList();
+$cssList[] = 'EnSp/index'; // 当画面専用CSS
 $this->assign('css', $this->Html->css($cssList));
 
 // JSファイルのインクルード
 $jsList = $this->CrudBase->getJsList();
-$jsList[] = 'UserMng/index'; // 当画面専用JavaScript
+$jsList[] = 'EnSp/index'; // 当画面専用JavaScript
 $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 ?>
@@ -15,67 +16,100 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 
 
-<h2>ユーザー管理</h2>
 
-ユーザー管理の検索閲覧および編集する画面です。<br>
-<br>
 
-<?php
-	$this->Html->addCrumb("トップ",'/');
-	$this->Html->addCrumb("ユーザー管理");
-	echo $this->Html->getCrumbs(" > ");
-?>
+<div class="cb_func_line">
+
+
+	<div class="cb_breadcrumbs">
+	<?php
+		$this->Html->addCrumb("トップ",'/');
+		$this->Html->addCrumb("絶滅危惧生物画面");
+		echo $this->Html->getCrumbs(" > ");
+	?>
+	</div>
+	
+	<div class="cb_kj_main">
+		<!-- 検索条件入力フォーム -->
+		<?php echo $this->Form->create('EnSp', array('url' => true )); ?>
+		<?php $this->CrudBase->inputKjMain($kjs,'kj_main','',null,'和名、学名、備考を検索する');?>
+		<?php echo $this->Form->submit('検索', array('name' => 'search','class'=>'btn btn-success','div'=>false,));?>
+		
+		<div class="btn-group">
+			<a href="<?php echo $home_url; ?>" class="btn btn-info btn-xs" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を初期状態に戻します。）">
+				<span class="glyphicon glyphicon-certificate"  ></span></a>
+			<button type="button" class="btn btn-default btn-xs" title="詳細検索項目を表示する" onclick="jQuery('.cb_kj_detail').toggle(300)">詳細</button>
+		</div>
+		
+		<div class="cb_kj_detail" style="display:none">
+		<?php 
+		
+		// --- CBBXS-1004
+		$this->CrudBase->inputKjId($kjs);
+		$this->CrudBase->inputKjSelect($kjs,'kj_bio_cls_id','綱',$bioClsIdList); 
+		$this->CrudBase->inputKjText($kjs,'kj_family_name','科');
+		$this->CrudBase->inputKjText($kjs,'kj_wamei','和名');
+		$this->CrudBase->inputKjText($kjs,'kj_scien_name','学名');
+		$this->CrudBase->inputKjSelect($kjs,'kj_en_ctg_id','絶滅危惧種カテゴリー',$enCtgIdList); 
+		$this->CrudBase->inputKjSelect($kjs,'kj_endemic_sp_flg','固有種フラグ',array(1=>'固有種')); 
+		$this->CrudBase->inputKjText($kjs,'kj_note','備考');
+		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
+		$this->CrudBase->inputKjDeleteFlg($kjs);
+		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新者');
+		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','IPアドレス');
+		$this->CrudBase->inputKjCreated($kjs);
+		$this->CrudBase->inputKjModified($kjs);
+
+		// --- CBBXE
+		
+		$this->CrudBase->inputKjLimit($kjs);
+		echo $this->Form->submit('検索', array('name' => 'search','class'=>'btn btn-success','div'=>false,));
+		echo $this->element('CrudBase/crud_base_cmn_inp');
+
+		?>
+		</div>
+		<?php echo $this->Form->end()?>
+	</div>
+	
+	<div id="cb_func_btns" class="btn-group" >
+		<button type="button" onclick="$('#detail_div').toggle(300);" class="btn btn-default">
+			<span class="glyphicon glyphicon-cog"></span></button>
+
+		<button id="table_transform_tbl_mode" type="button" class="btn btn-default" onclick="tableTransform(0)" style="display:none">
+			<span class="glyphicon glyphicon-th" title="一覧の変形・テーブルモード"></span></button>
+			
+		<button id="table_transform_div_mode" type="button" class="btn btn-default" onclick="tableTransform(1)" >
+			<span class="glyphicon glyphicon-th-large" title="一覧の変形・区分モード"></span></button>
+			
+		<button type="button" class="btn btn-warning" onclick="newInpShow(this);">
+			<span class="glyphicon glyphicon-plus-sign" title="新規入力"></span></button>
+	</div>
+	
+	<div style="display:inline-block;margin-left:20px">
+		<a href="bio_cls" class="btn btn-primary btn-xs">綱の編集</a>
+		<a href="en_ctg" class="btn btn-primary btn-xs">絶滅危惧種カテゴリー</a>
+	</div>
+</div><!-- cb_func_line -->
+
+<div style="clear:both"></div>
+
 
 <?php echo $this->element('CrudBase/crud_base_new_page_version');?>
 <div id="err" class="text-danger"><?php echo $errMsg;?></div>
 
 
-<div id="cb_func_btns" >
-	<button type="button" onclick="$('#detail_div').toggle(300);" class="btn btn-default">
-		<span class="glyphicon glyphicon-cog"></span></button>
-	<a href="<?php echo $home_url; ?>" class="btn btn-info" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を初期状態に戻します。）">
-		<span class="glyphicon glyphicon-certificate"  ></span></a>
-	<button type="button" class="btn btn-warning" onclick="newInpShow(this);">
-		<span class="glyphicon glyphicon-plus-sign" title="新規入力"></span></button>
-</div>
-<div style="clear:both"></div>
-
-
-<!-- 検索条件入力フォーム -->
-<?php echo $this->Form->create('UserMng', array('url' => true )); ?>
 <div style="clear:both"></div>
 
 <div id="detail_div" style="display:none">
 	
-	<?php 
-	
-	// --- CBBXS-1004
-		$this->CrudBase->inputKjId($kjs);
-		$this->CrudBase->inputKjText($kjs,'kj_username','ユーザー名');
-		$this->CrudBase->inputKjText($kjs,'kj_password','パスワード');
-		$this->CrudBase->inputKjSelect($kjs,'kj_role','ネコ種別',$roleList); 
-		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
-		$this->CrudBase->inputKjDeleteFlg($kjs);
-		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新ユーザー');
-		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス');
-		$this->CrudBase->inputKjCreated($kjs);
-		$this->CrudBase->inputKjModified($kjs);
-
-	// --- CBBXE
-	
-	$this->CrudBase->inputKjLimit($kjs);
-	echo $this->element('CrudBase/crud_base_cmn_inp');
-
-	echo $this->Form->submit('検索', array('name' => 'search','class'=>'btn btn-success','div'=>false,));
-	
+<?php 
 	echo $this->element('CrudBase/crud_base_index');
 	
-	$csv_dl_url = $this->html->webroot . 'user_mng/csv_download';
+	$csv_dl_url = $this->html->webroot . 'en_sp/csv_download';
 	$this->CrudBase->makeCsvBtns($csv_dl_url);
-	?>
+?>
 
 </div><!-- detail_div -->
-<?php echo $this->Form->end()?>
 
 
 <div style="margin-top:8px;">
@@ -89,7 +123,7 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 <div id="crud_base_auto_save_msg" style="height:20px;" class="text-success"></div>
 <!-- 一覧テーブル -->
-<table id="user_mng_tbl" border="1"  class="table table-striped table-bordered table-condensed">
+<table id="en_sp_tbl" border="1"  class="table table-striped table-bordered table-condensed">
 
 <thead>
 <tr>
@@ -107,15 +141,20 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 // td要素出力を列並モードに対応させる
 $this->CrudBase->startClmSortMode($field_data);
+$endemicSpList = array(1=>'固有種');
 
 foreach($data as $i=>$ent){
 
 	echo "<tr id=i{$ent['id']}>";
 	// CBBXS-1005
 	$this->CrudBase->tdId($ent,'id',array('checkbox_name'=>'pwms'));
-	$this->CrudBase->tdStr($ent,'username');
-	$this->CrudBase->tdStr($ent,'password');
-	$this->CrudBase->tdList($ent,'role',$roleList);
+	$this->CrudBase->tdList($ent,'bio_cls_id',$bioClsIdList);
+	$this->CrudBase->tdStr($ent,'family_name');
+	$this->CrudBase->tdStr($ent,'wamei');
+	$this->CrudBase->tdStr($ent,'scien_name');
+	$this->CrudBase->tdList($ent,'en_ctg_id',$enCtgIdList);
+	$this->CrudBase->tdList($ent,'endemic_sp_flg',$endemicSpList);
+	$this->CrudBase->tdNote($ent,'note');
 	$this->CrudBase->tdPlain($ent,'sort_no');
 	$this->CrudBase->tdDeleteFlg($ent,'delete_flg');
 	$this->CrudBase->tdStr($ent,'update_user');
@@ -172,21 +211,39 @@ foreach($data as $i=>$ent){
 	<table><tbody>
 
 		<!-- CBBXS-1006 -->
-		<tr><td>ユーザー名: </td><td>
-			<input type="text" name="username" class="valid" value=""  maxlength="50" title="50文字以内で入力してください" />
-			<label class="text-danger" for="username"></label>
+		<tr><td>綱ID: </td><td>
+			<?php $this->CrudBase->selectX('bio_cls_id',null,$bioClsIdList,null);?>
+			<label class="text-danger" for="bio_cls_id"></label>
 		</td></tr>
 
-		<tr><td>パスワード: </td><td>
-			<input type="text" name="password" class="valid" value=""  maxlength="50" title="50文字以内で入力してください" />
-			<label class="text-danger" for="password"></label>
+		<tr><td>科: </td><td>
+			<input type="text" name="family_name" class="valid" value=""  maxlength="255" title="255文字以内で入力してください" />
+			<label class="text-danger" for="family_name"></label>
 		</td></tr>
 
-		<tr><td>権限: </td><td>
-			<?php $this->CrudBase->selectX('role',null,$roleList);?>
-			<label class="text-danger" for="role"></label>
+		<tr><td>和名: </td><td>
+			<input type="text" name="wamei" class="valid" value=""  maxlength="255" title="255文字以内で入力してください" />
+			<label class="text-danger" for="wamei"></label>
 		</td></tr>
 
+		<tr><td>学名: </td><td>
+			<input type="text" name="scien_name" class="valid" value=""  maxlength="225" title="225文字以内で入力してください" />
+			<label class="text-danger" for="scien_name"></label>
+		</td></tr>
+
+		<tr><td>絶滅危惧種カテゴリーID: </td><td>
+			<?php $this->CrudBase->selectX('en_ctg_id',null,$enCtgIdList,null,'');?>
+			<label class="text-danger" for="en_ctg_id"></label>
+		</td></tr>
+
+		<tr><td>固有種フラグ: </td><td>
+			<?php $this->CrudBase->selectX('endemic_sp_flg',null,array(1=>'固有種'),null,'');?>
+			<label class="text-danger" for="endemic_sp_flg"></label>
+		</td></tr>
+		<tr><td>備考： </td><td>
+			<textarea name="note" ></textarea>
+			<label class="text-danger" for="note"></label>
+		</td></tr>
 
 		<!-- CBBXE -->
 	</tbody></table>
@@ -202,8 +259,9 @@ foreach($data as $i=>$ent){
 
 
 <!-- 編集フォーム -->
-<div id="ajax_crud_edit_form" class="panel panel-primary">
+<div id="ajax_crud_edit_form" class="panel panel-primary" >
 
+	
 	<div class="panel-heading">
 		<div class="pnl_head1">編集</div>
 		<div class="pnl_head2"></div>
@@ -216,28 +274,48 @@ foreach($data as $i=>$ent){
 	</div>
 	<div class="panel-body">
 	<div class="err text-danger"></div>
+	<button type="button"  onclick="editReg();" class="btn btn-success">
+		<span class="glyphicon glyphicon-ok"></span>
+	</button>
 	<table><tbody>
 
 		<!-- CBBXS-1007 -->
 		<tr><td>ID: </td><td>
 			<span class="id"></span>
 		</td></tr>
-		<tr><td>ユーザー名: </td><td>
-			<input type="text" name="username" class="valid" value=""  maxlength="50" title="50文字以内で入力してください" />
-			<label class="text-danger" for="username"></label>
+		<tr><td>綱ID: </td><td>
+			<?php $this->CrudBase->selectX('bio_cls_id',null,$bioClsIdList,null);?>
+			<label class="text-danger" for="bio_cls_id"></label>
 		</td></tr>
 
-		<tr><td>パスワード: </td><td>
-			<input type="button" id="chg_pw_btn" value="パスワード変更" onclick='chgPwBtnClick();' class="btn btn-warning btn-xs" />
-			<input type="text" id="edit_password" name="password" class="valid" value=""  maxlength="50" title="50文字以内で入力してください" style="display:none" />
-			<label class="text-danger" for="password"></label>
+		<tr><td>科: </td><td>
+			<input type="text" name="family_name" class="valid" value=""  maxlength="255" title="255文字以内で入力してください" />
+			<label class="text-danger" for="family_name"></label>
 		</td></tr>
 
-		<tr><td>権限: </td><td>
-			<?php $this->CrudBase->selectX('role',null,$roleList);?>
-			<label class="text-danger" for="role"></label>
+		<tr><td>和名: </td><td>
+			<input type="text" name="wamei" class="valid" value=""  maxlength="255" title="255文字以内で入力してください" />
+			<label class="text-danger" for="wamei"></label>
 		</td></tr>
 
+		<tr><td>学名: </td><td>
+			<input type="text" name="scien_name" class="valid" value=""  maxlength="225" title="225文字以内で入力してください" />
+			<label class="text-danger" for="scien_name"></label>
+		</td></tr>
+
+		<tr><td>絶滅危惧種カテゴリーID: </td><td>
+			<?php $this->CrudBase->selectX('en_ctg_id',null,$enCtgIdList,null,'');?>
+			<label class="text-danger" for="en_ctg_id"></label>
+		</td></tr>
+
+		<tr><td>固有種フラグ: </td><td>
+			<?php $this->CrudBase->selectX('endemic_sp_flg',null,array(1=>'固有種'),null,'');?>
+			<label class="text-danger" for="endemic_sp_flg"></label>
+		</td></tr>
+		<tr><td>備考： </td><td>
+			<textarea name="note"></textarea>
+			<label class="text-danger" for="note"></label>
+		</td></tr>
 		<tr><td>削除：<input type="checkbox" name="delete_flg" class="valid"  /> </td><td></td></tr>
 
 		<!-- CBBXE -->
@@ -285,8 +363,13 @@ foreach($data as $i=>$ent){
 		</td></tr>
 		
 
-		<tr><td>ユーザー管理名: </td><td>
-			<span class="user_mng_name"></span>
+		<tr><td>絶滅危惧生物名: </td><td>
+			<span class="en_sp_name"></span>
+		</td></tr>
+		
+		<tr><td>画像ファイル: </td><td>
+			<label for="img_fn"></label><br>
+			<img src="" class="img_fn" width="80" height="80" ></img>
 		</td></tr>
 
 
@@ -335,8 +418,8 @@ foreach($data as $i=>$ent){
 		</td></tr>
 		
 
-		<tr><td>ユーザー管理名: </td><td>
-			<span class="user_mng_name"></span>
+		<tr><td>絶滅危惧生物名: </td><td>
+			<span class="en_sp_name"></span>
 		</td></tr>
 
 
@@ -370,7 +453,8 @@ foreach($data as $i=>$ent){
 <div style="display:none">
 	
 	<!-- CBBXS-1022 -->
-	<input id="role_json" type="hidden" value='<?php echo $role_json; ?>' />
+	<input id="bio_cls_id_json" type="hidden" value='<?php echo $bio_cls_id_json; ?>' />
+	<input id="en_ctg_id_json" type="hidden" value='<?php echo $en_ctg_id_json; ?>' />
 
 	<!-- CBBXE -->
 </div>
