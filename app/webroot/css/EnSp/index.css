@@ -1,4 +1,11 @@
 
+
+
+#en_sp_tbl{
+	/* Edge‚Ìth•w’è•s”\–h~ */
+	table-layout: fixed;
+}
+
 #en_sp_tbl thead .note{
 	width:200px;
 }

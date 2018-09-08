@@ -163,10 +163,10 @@ class EnSpController extends CrudBaseController {
 // 			return 'Error:login is needed.';// 認証中でなければエラー
 // 		}
 		
-		// 未ログインかつローカルでないなら、エラーアラートを返す。
-		if(empty($this->Auth->user()) && $_SERVER['SERVER_NAME']!='localhost'){
-			return '一般公開モードでは編集登録はできません。';
-		}
+// 		// 未ログインかつローカルでないなら、エラーアラートを返す。
+// 		if(empty($this->Auth->user()) && $_SERVER['SERVER_NAME']!='localhost'){
+// 			return '一般公開モードでは編集登録はできません。';
+// 		}
 		
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
@@ -220,7 +220,7 @@ class EnSpController extends CrudBaseController {
 		App::uses('Sanitize', 'Utility');
 	
 		$this->autoRender = false;//ビュー(ctp)を使わない。
-		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		//if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 	
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
@@ -265,7 +265,7 @@ class EnSpController extends CrudBaseController {
 		$this->autoRender = false;//ビュー(ctp)を使わない。
 		
 		App::uses('Sanitize', 'Utility');
-		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		//if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		
 		
 		$json=$_POST['key1'];

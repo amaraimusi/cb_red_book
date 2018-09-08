@@ -114,6 +114,12 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 </div><!-- detail_div -->
 
+<br>
+見本Webアプリです。お試しでデータの編集や削除をすることができます。データは適当タイミングで元に戻します。
+（データ元
+<a href="https://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%83%E3%83%89%E3%83%87%E3%83%BC%E3%82%BF%E3%83%96%E3%83%83%E3%82%AF_(%E7%92%B0%E5%A2%83%E7%9C%81)" class="btn btn-link btn-xs" target="blank" >
+	レッドデータブック_(環境省) - Wikipedia</a>）<br><br>
+
 
 <div style="margin-top:8px;">
 	<div style="display:inline-block">
